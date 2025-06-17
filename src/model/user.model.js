@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Mongoose šema za korisnika aplikacije
 const userSchema = new Schema({
@@ -31,7 +31,7 @@ const userSchema = new Schema({
 userSchema.pre('save', async function(next) {
     const user = this;
     if(!user.isModified('password')) return next();
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword = await  bcrypt.hash(user.password, 10);
     user.password = hashedPassword;
     next();
 
