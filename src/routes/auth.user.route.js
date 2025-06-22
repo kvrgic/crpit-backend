@@ -4,23 +4,12 @@ const generateToken = require('../middleware/generateToken');
 const { CURSOR_FLAGS } = require('mongodb');
 const { registerValidation } = require('../middleware/validators/userValidator');
 const validate = require('../middleware/validators/validate');
+const { register } = require('../middleware/controllers/authController')
 
 const router = express.Router();
 
 // Registracija novog korisnika
-router.post('/register',registerValidation, validate, async(req, res) => {
-    try{
-        const {email, password, username} = req.body;
-        const user = new User({email, password, username});
-        //console.log(user)
-        await user.save();
-        res.status(200).send({message: "Korisnik je uspješno registriran!", user: user});
-
-    } catch(error){
-        console.log("Failed to register", error);
-        res.status(500).json({message: 'Registracija nije uspjela!'});
-    }
-})
+router.post('/register',registerValidation, validate, register)
 
 // Prijava korisnika
 router.post("/login", async (req, res) => {

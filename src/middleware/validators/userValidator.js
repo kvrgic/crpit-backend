@@ -2,9 +2,11 @@ const { body } = require('express-validator');
 
 exports.registerValidation = [
   body('username') 
+    .trim()
     .notEmpty().withMessage('Ime je obavezno'),
 
   body('email')
+    .trim()
     .isEmail().withMessage('Unesite ispravan email'),
 
   body('password')
