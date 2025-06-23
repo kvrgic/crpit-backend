@@ -13,10 +13,16 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json({limit: '10mb'}))
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}))
+const allowedOrigin = "https://crpit-frontend.vercel.app";
 app.use(cors({
-  origin: "https://crpit-frontend.vercel.app",
+  origin: allowedOrigin,
   credentials: true,
-}))
+}));
+
+app.options('*', cors({
+  origin: allowedOrigin,
+  credentials: true,
+}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //routes
@@ -28,20 +34,20 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/auth", userRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Inn-Tech blog server is running...!');
+});
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Ruta nije pronađena." });
+});
 
 async function main() {
-    await mongoose.connect(process.env.MONGODB_URL);
-
-    //b3rpHmkf84RPkCGu
-    //kvrgicaida95
-  
-    app.get('/', (req, res) => {
-        res.send('Inn-Tech blog server is running...!')
-      })
-
+  await mongoose.connect(process.env.MONGODB_URL);
+  console.log("Mongodb connected successfully!");
 }
 
-main().then(() => console.log("Mongodb connected seccessfully!")).catch(err => console.log(err));
+main().catch(err => console.log(err));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
